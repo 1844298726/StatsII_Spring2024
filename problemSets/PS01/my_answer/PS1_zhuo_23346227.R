@@ -37,25 +37,31 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 # Problem 1
 #####################
 
+# Set seed for reproducibility
+set.seed(123)
+
+# Generate 1,000 Cauchy random variables
+data <- rcauchy(1000, location = 0, scale = 1)
+
+# Define a function to perform the Kolmogorov-Smirnov test
 ks_test_normal <- function(data) {
-  # Create empirical distribution of observed data
+  # Create empirical CDF of observed data
   ECDF <- ecdf(data)
   empiricalCDF <- ECDF(data)
   
-  # Generate test statistic
-  D <- max(abs(empiricalCDF - pnorm(data, mean = mean(data), sd = sd(data))))
+  # Calculate the theoretical CDF for a normal distribution
+  theoreticalCDF <- pnorm(sort(data))
   
-  # Calculate the p-value using R's ks.test function
-  p_value <- ks.test(data, "pnorm", mean = mean(data), sd = sd(data))$p.value
+  # Generate test statistic: maximum difference between empirical CDF and theoretical CDF
+  D <- max(abs(empiricalCDF - theoreticalCDF))
   
-  return(list(D = D, p_value = p_value))
+  return(D)
 }
 
-# To test this function:
-set.seed(123)
-cauchy_data <- rcauchy(1000, location = 0, scale = 1)
-test_result <- ks_test_normal(cauchy_data)
-test_result
+# Perform the test
+D_statistic <- ks_test_normal(data)
+D_statistic
+
 
 #####################
 # Problem 2
@@ -86,3 +92,6 @@ list(
   BFGS = results_bfgs$par,
   LM = coef(results_lm)
 )
+
+
+
