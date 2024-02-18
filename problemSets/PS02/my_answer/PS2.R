@@ -22,11 +22,10 @@ pkgTest <- function(pkg){
     install.packages(new.pkg,  dependencies = TRUE)
   sapply(pkg,  require,  character.only = TRUE)
 }
-
+lapply(c("tidyverse", "car"),  pkgTest)
 # here is where you load any necessary packages
 # ex: stringr
 # lapply(c("stringr"),  pkgTest)
-
 lapply(c(),  pkgTest)
 
 # set wd for current folder
@@ -35,6 +34,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 #####################
 # Problem 1
 #####################
+
 
 # load data
 load(url("https://github.com/ASDS-TCD/StatsII_Spring2024/blob/main/datasets/climateSupport.RData?raw=true"))
@@ -94,4 +94,26 @@ model_interaction <- glm(choice ~ countries*sanctions,
 summary(model_interaction)
 # Use anova() to compare models or view AIC/BIC
 anova(model, model_interaction, test="Chisq")
+#plot
+# create dataframe
+predicted_data <- data.frame(
+  choice = climateSupport$choice,
+  model_hat = model$fitted.values,
+  model_interaction_hat = model_interaction$fitted.values
+)
+
+# Reorder and Draw
+predicted_data %>%
+  arrange(model_hat) %>%
+  mutate(rank = row_number()) %>%
+  ggplot(aes(rank, model_hat)) +
+  geom_point(aes(colour = choice), alpha = 0.5) +
+  scale_y_continuous(limits = c(0,1))
+
+predicted_data %>%
+  arrange(model_interaction_hat) %>%
+  mutate(rank = row_number()) %>%
+  ggplot(aes(rank, model_interaction_hat)) +
+  geom_point(aes(colour = choice), alpha = 0.5) +
+  scale_y_continuous(limits = c(0,1))
 
