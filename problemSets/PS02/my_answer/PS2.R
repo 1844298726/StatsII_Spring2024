@@ -69,6 +69,20 @@ df.null <- length(coef(model)) - 1
 # Calculate the p-value of the global null hypothesis
 global_null_p_value <- pchisq(summary(model)$null.deviance, df = df.null, lower.tail = FALSE)
 cat("Global null hypothesis p-value:", global_null_p_value, "\n")
+#2a:
+# Extract coefficients from the model
+coefficients <- coef(model)
+# Extracting coefficients related to interaction terms
+interact_coefficients <- coefficients[grep("countries160 of 192:sanctions", names(coefficients))]
+# Calculate the probability logarithm at 5% and 15% sanction levels
+log_odds_5percent <- coefficients["(Intercept)"] + coefficients["countries160 of 192"] + coefficients["sanctions5%"] 
+log_odds_5percent
+log_odds_15percent <- coefficients["(Intercept)"] + coefficients["countries160 of 192"] + coefficients["sanctions15%"] 
+log_odds_15percent
+# Calculate the change in probability
+odds_change <- exp(log_odds_15percent - log_odds_5percent)
+# Print results
+cat("As sanctions increase from 5% to 15%, the probability of individuals supporting policies changes as follows:", odds_change, "\n")
 #2b:Calculate the estimated probability
 log_odds_80_no_sanctions <- coef(model)['(Intercept)'] + coef(model)['countries80 of 192']
 prob_80_no_sanctions <- exp(log_odds_80_no_sanctions) / (1 + exp(log_odds_80_no_sanctions))
@@ -80,3 +94,4 @@ model_interaction <- glm(choice ~ countries*sanctions,
 summary(model_interaction)
 # Use anova() to compare models or view AIC/BIC
 anova(model, model_interaction, test="Chisq")
+

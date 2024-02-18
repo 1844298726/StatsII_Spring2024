@@ -131,11 +131,12 @@
 	\begin{enumerate}
 		\item
 		For the policy in which nearly all countries participate [160 of 192], how does increasing sanctions from 5\% to 15\% change the odds that an individual will support the policy? (Interpretation of a coefficient)\\
+		\lstinputlisting[language=R, firstline=72,lastline=85]{PS2.R} 
 		\textbf{Result}:\\
-		The coefficients associated with the levels of sanctions suggest that increasing sanctions from 5\% to 15\% decreases the odds of individual support for the policy by 0.13325.So, when sanctions increase from 5\% to 15\%, the odds of individual support for the policy decrease.
+		As sanctions increase from 5\% to 15\%, the probability of individuals supporting policies changes as follows: 0.7224531 \\
 		\item
 		What is the estimated probability that an individual will support a policy if there are 80 of 192 countries participating with no sanctions? \\
-		\lstinputlisting[language=R, firstline=72,lastline=75]{PS2.R} 
+		\lstinputlisting[language=R, firstline=86,lastline=89]{PS2.R} 
 		\textbf{Result}:\\
 		Estimated probability of 80 countries without sanctions: 0.5159191 \\
 		\item
@@ -143,7 +144,7 @@
 		
 		\begin{itemize}
 			\item Perform a test to see if including an interaction is appropriate.
-			\lstinputlisting[language=R, firstline=76,lastline=82]{PS2.R} 
+			\lstinputlisting[language=R, firstline=90,lastline=96]{PS2.R} 
 			\textbf{Result}:\\
 			\includegraphics[width=0.8\textwidth]{Q2c1.png}\\
 			\\
