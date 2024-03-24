@@ -47,6 +47,7 @@ gdp_data$OIL <- factor(gdp_data$OIL,
                        levels = c(0,1),
                        labels = c("Below50%","Beyond50%"))
 
+
 gdp_data$GDPWdiff <- factor(
   ifelse(gdp_data$GDPWdiff > 0, "positive",
          ifelse(gdp_data$GDPWdiff == 0, "no change", "negative")),
@@ -65,7 +66,12 @@ model1 <- multinom(GDPWdiff ~ REG + OIL, data = gdp_data)
 
 # View Model Summary
 summary(model1)
-
+# Extract estimated values of intercept and coefficients
+intercepts <- coef(model1)
+# View estimated values of intercept and coefficients
+print("Intercepts:")
+print(intercepts)
+#exponentiate coefficients
 exp(coef(model1)[,c(1:3)])
 
 # Encode GDPWdiff as an ordered factor variable GDPWdiff
@@ -80,7 +86,11 @@ model2 <- polr(GDPWdiff ~ REG + OIL, data = gdp_data, Hess=T)
 
 # View Model Summary
 summary(model2)
-
+# Extract estimated values of intercept and coefficients
+intercepts <- coef(model2)
+# View estimated values of intercept and coefficients
+print("Intercepts:")
+print(intercepts)
 
 #####################
 # Problem 2

@@ -6,11 +6,11 @@ library(MASS)
 library(nnet)
 library(ggplot2)
 
-# EDA
+# EDA 数据探索分析
 summary(workingMoms)
 ftable(xtabs(~ gender + year + attitude, data = workingMoms))
 
-# do some wrangling
+# do some wrangling 进行数据整理
 workingMoms$attitude <- factor(workingMoms$attitude, 
                                levels = c("SD", "D", "A", "SA"),
                                labels = c("Strongly Disagree",
@@ -34,26 +34,29 @@ ggplot(workingMoms, aes(attitude, prestige)) +
   theme(axis.text.x = element_text(angle = 45)) +
   facet_grid(gender ~ year)
 
-# a) Perform an ordered (proportional odds) logistic regression
+# a) Perform an ordered (proportional odds) logistic regression 进行有序（比例几率）逻辑回归
 
 ord.log <- polr(attitude ~ ., data = workingMoms, Hess = TRUE)
 summary(ord.log)
 
-# Calculate a p value
+# Calculate a p value 计算 p 值
 ctable <- coef(summary(ord.log))
 p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
 (ctable <- cbind(ctable, "p value" = p))
 
-# Calculate confidence intervals
+# Calculate confidence intervals 计算置信区间
 (ci <- confint(ord.log))
 
-# convert to odds ratio
+# convert to odds ratio 转换为几率比
 exp(cbind(OR = coef(ord.log), ci))
 
 # How do we interpret these coefficients?
 
 # b) fit a multinomial logit model
 # set a reference level for the outcome
+#如何解释这些系数？
+#b) 拟合多项式逻辑回归模型
+#为目标变量设定参考水平
 workingMoms$attitude <- relevel(workingMoms$attitude, ref = "Strongly Disagree")
 
 # run model
@@ -67,7 +70,9 @@ z <- summary(mult.log)$coefficients/summary(mult.log)$standard.errors
 
 # how do we interpret these coefficients?
 
-# we can use predicted probabilities to help our interpretation
+# we can use predicted probabilities to help our interpretation 
+#如何解释这些系数？
+#我们可以使用预测概率来辅助解释
 pp <- data.frame(fitted(mult.log))
 head(data.frame(attitude = workingMoms$attitude,
                 SD = pp$Strongly.Disagree,
@@ -75,7 +80,7 @@ head(data.frame(attitude = workingMoms$attitude,
                 A = pp$Agree,
                 SA = pp$Strongly.Agree))
 
-# c) Consider gender as an interaction
+# c) Consider gender as an interaction 考虑性别交互作用
 mult.log.int <- multinom(attitude ~ gender * ., data = workingMoms)
 summary(mult.log.int)
 
